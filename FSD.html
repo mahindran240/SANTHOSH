@@ -1,0 +1,1451 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Online Election Voting System</title>
+
+    <style>
+        /* =========================
+           GLOBAL STYLES
+        ========================== */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        header {
+            background: linear-gradient(135deg, #14213d, #1d4ed8);
+            color: white;
+            padding: 18px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            background: white;
+            color: #1d4ed8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 23px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 21px;
+        }
+
+        .logo p {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 3px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .status {
+            background: rgba(255,255,255,0.15);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+
+        /* =========================
+           MAIN CONTAINER
+        ========================== */
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 30px auto;
+        }
+
+        /* =========================
+           LOGIN PAGE
+        ========================== */
+
+        #loginPage {
+            min-height: calc(100vh - 90px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-card {
+            width: 430px;
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 12px 40px rgba(0,0,0,0.10);
+        }
+
+        .login-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 18px;
+            background: #e0e7ff;
+            color: #1d4ed8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .login-card h2 {
+            text-align: center;
+            margin-bottom: 8px;
+            color: #14213d;
+        }
+
+        .login-card .subtitle {
+            text-align: center;
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 7px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 13px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.10);
+        }
+
+        .primary-btn {
+            width: 100%;
+            padding: 13px;
+            border: none;
+            border-radius: 9px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        .primary-btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .demo-info {
+            margin-top: 20px;
+            padding: 12px;
+            background: #eff6ff;
+            border-left: 4px solid #2563eb;
+            border-radius: 6px;
+            color: #374151;
+            font-size: 12px;
+        }
+
+        /* =========================
+           DASHBOARD
+        ========================== */
+
+        #dashboard {
+            display: none;
+        }
+
+        .welcome-section {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .welcome-section h2 {
+            color: #14213d;
+            margin-bottom: 5px;
+        }
+
+        .welcome-section p {
+            color: #6b7280;
+            font-size: 14px;
+        }
+
+        .logout-btn {
+            border: none;
+            padding: 10px 17px;
+            background: #ef4444;
+            color: white;
+            border-radius: 8px;
+            font-weight: bold;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        /* =========================
+           STATISTICS
+        ========================== */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .blue {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .orange {
+            background: #ffedd5;
+            color: #ea580c;
+        }
+
+        .stat-card h3 {
+            font-size: 22px;
+            color: #111827;
+        }
+
+        .stat-card p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* =========================
+           SECTION HEADER
+        ========================== */
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .section-header h2 {
+            color: #14213d;
+        }
+
+        .search-box {
+            width: 240px;
+            padding: 10px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            outline: none;
+        }
+
+        .search-box:focus {
+            border-color: #2563eb;
+        }
+
+        /* =========================
+           CANDIDATE CARDS
+        ========================== */
+
+        .candidates {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .candidate-card {
+            background: white;
+            padding: 23px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+            transition: 0.3s;
+            border: 2px solid transparent;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+        }
+
+        .candidate-card.selected {
+            border-color: #2563eb;
+            background: #f8fbff;
+        }
+
+        .candidate-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 17px;
+        }
+
+        .candidate-photo {
+            width: 62px;
+            height: 62px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1d4ed8;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .candidate-info h3 {
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .candidate-info p {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .symbol {
+            background: #f3f4f6;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 13px;
+        }
+
+        .vote-option {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px;
+            background: #f9fafb;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 12px;
+        }
+
+        .vote-option input {
+            accent-color: #2563eb;
+        }
+
+        .vote-btn {
+            width: 100%;
+            border: none;
+            padding: 11px;
+            border-radius: 8px;
+            background: #2563eb;
+            color: white;
+            font-weight: bold;
+        }
+
+        .vote-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           RESULT SECTION
+        ========================== */
+
+        .results-section {
+            background: white;
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.06);
+        }
+
+        .result-item {
+            margin-bottom: 20px;
+        }
+
+        .result-heading {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        .progress {
+            height: 10px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #2563eb, #60a5fa);
+            border-radius: 20px;
+            transition: width 0.6s ease;
+        }
+
+        /* =========================
+           MODAL
+        ========================== */
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 100;
+        }
+
+        .modal-box {
+            width: 420px;
+            max-width: 100%;
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            animation: popup 0.25s ease;
+        }
+
+        @keyframes popup {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 65px;
+            height: 65px;
+            margin: 0 auto 15px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: #16a34a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+        }
+
+        .modal-box h2 {
+            margin-bottom: 8px;
+            color: #14213d;
+        }
+
+        .modal-box p {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 11px;
+            border-radius: 8px;
+            border: none;
+            font-weight: bold;
+        }
+
+        .cancel-btn {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .confirm-btn {
+            background: #16a34a;
+            color: white;
+        }
+
+        /* =========================
+           SUCCESS MESSAGE
+        ========================== */
+
+        .success-message {
+            display: none;
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: #166534;
+            padding: 13px;
+            border-radius: 9px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        /* =========================
+           FOOTER
+        ========================== */
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        /* =========================
+           RESPONSIVE DESIGN
+        ========================== */
+
+        @media (max-width: 900px) {
+            .candidates {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 650px) {
+            header {
+                padding: 15px 5%;
+            }
+
+            .status {
+                display: none;
+            }
+
+            .container {
+                width: 94%;
+                margin: 20px auto;
+            }
+
+            .login-card {
+                padding: 25px;
+            }
+
+            .welcome-section {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .candidates {
+                grid-template-columns: 1fr;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header>
+        <div class="logo">
+            <div class="logo-icon">✓</div>
+
+            <div>
+                <h1>Online Election</h1>
+                <p>Secure Voting Portal</p>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="status">● Election Active</div>
+        </div>
+    </header>
+
+
+    <!-- =========================
+         LOGIN PAGE
+    ========================== -->
+
+    <section id="loginPage">
+
+        <div class="login-card">
+
+            <div class="login-icon">🗳️</div>
+
+            <h2>Voter Login</h2>
+
+            <p class="subtitle">
+                Login to cast your vote
+            </p>
+
+            <form id="loginForm">
+
+                <div class="form-group">
+                    <label for="voterId">
+                        Voter ID
+                    </label>
+
+                    <input
+                        type="text"
+                        id="voterId"
+                        placeholder="Enter your Voter ID"
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="Enter password"
+                        required
+                    >
+                </div>
+
+                <button
+                    type="submit"
+                    class="primary-btn"
+                >
+                    Login & Continue
+                </button>
+
+            </form>
+
+            <div class="demo-info">
+                <strong>Demo Login:</strong><br>
+                Voter ID: <b>VOTER001</b><br>
+                Password: <b>123456</b>
+            </div>
+
+        </div>
+
+    </section>
+    
+    <main id="dashboard">
+
+        <div class="container">
+
+            <!-- Welcome -->
+
+            <div class="welcome-section">
+
+                <div>
+                    <h2>
+                        Welcome, <span id="voterName">Voter</span> 👋
+                    </h2>
+
+                    <p>
+                        Your vote is important. Select one candidate and cast your vote.
+                    </p>
+                </div>
+
+                <button
+                    class="logout-btn"
+                    onclick="logout()"
+                >
+                    Logout
+                </button>
+
+            </div>
+
+
+            <!-- Statistics -->
+
+            <div class="stats">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon blue">
+                        🗳️
+                    </div>
+
+                    <div>
+                        <h3 id="totalVotes">0</h3>
+                        <p>Total Votes</p>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon green">
+                        👥
+                    </div>
+
+                    <div>
+                        <h3>3</h3>
+                        <p>Candidates</p>
+                    </div>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-icon orange">
+                        ⏱️
+                    </div>
+
+                    <div>
+                        <h3>Active</h3>
+                        <p>Election Status</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Success Message -->
+
+            <div
+                class="success-message"
+                id="successMessage"
+            >
+                ✓ Your vote has been successfully recorded.
+            </div>
+
+
+            <!-- Candidate Section -->
+
+            <div class="section-header">
+
+                <h2>Choose Your Candidate</h2>
+
+                <input
+                    type="text"
+                    class="search-box"
+                    id="searchCandidate"
+                    placeholder="Search candidate..."
+                    onkeyup="searchCandidates()"
+                >
+
+            </div>
+
+
+            <div
+                class="candidates"
+                id="candidateList"
+            >
+
+                <!-- Candidate 1 -->
+
+                <div
+                    class="candidate-card"
+                    data-name="Arun Kumar"
+                >
+
+                    <div class="candidate-top">
+
+                        <div class="candidate-photo">
+                            AK
+                        </div>
+
+                        <div class="candidate-info">
+                            <h3>Arun Kumar</h3>
+                            <p>Independent Candidate</p>
+                        </div>
+
+                    </div>
+
+                    <div class="symbol">
+                        🕊️ <strong>Election Symbol:</strong> Dove
+                    </div>
+
+                    <label class="vote-option">
+
+                        <input
+                            type="radio"
+                            name="candidate"
+                            value="Arun Kumar"
+                            onchange="selectCandidate(this)"
+                        >
+
+                        <span>Select this candidate</span>
+
+                    </label>
+
+                    <button
+                        class="vote-btn"
+                        onclick="openConfirmation('Arun Kumar')"
+                        disabled
+                    >
+                        Vote
+                    </button>
+
+                </div>
+
+
+                <!-- Candidate 2 -->
+
+                <div
+                    class="candidate-card"
+                    data-name="Priya Sharma"
+                >
+
+                    <div class="candidate-top">
+
+                        <div class="candidate-photo">
+                            PS
+                        </div>
+
+                        <div class="candidate-info">
+                            <h3>Priya Sharma</h3>
+                            <p>People's Party</p>
+                        </div>
+
+                    </div>
+
+                    <div class="symbol">
+                        🌳 <strong>Election Symbol:</strong> Tree
+                    </div>
+
+                    <label class="vote-option">
+
+                        <input
+                            type="radio"
+                            name="candidate"
+                            value="Priya Sharma"
+                            onchange="selectCandidate(this)"
+                        >
+
+                        <span>Select this candidate</span>
+
+                    </label>
+
+                    <button
+                        class="vote-btn"
+                        onclick="openConfirmation('Priya Sharma')"
+                        disabled
+                    >
+                        Vote
+                    </button>
+
+                </div>
+
+
+                <!-- Candidate 3 -->
+
+                <div
+                    class="candidate-card"
+                    data-name="Rahul Raj"
+                >
+
+                    <div class="candidate-top">
+
+                        <div class="candidate-photo">
+                            RR
+                        </div>
+
+                        <div class="candidate-info">
+                            <h3>Rahul Raj</h3>
+                            <p>Progressive Front</p>
+                        </div>
+
+                    </div>
+
+                    <div class="symbol">
+                        ⭐ <strong>Election Symbol:</strong> Star
+                    </div>
+
+                    <label class="vote-option">
+
+                        <input
+                            type="radio"
+                            name="candidate"
+                            value="Rahul Raj"
+                            onchange="selectCandidate(this)"
+                        >
+
+                        <span>Select this candidate</span>
+
+                    </label>
+
+                    <button
+                        class="vote-btn"
+                        onclick="openConfirmation('Rahul Raj')"
+                        disabled
+                    >
+                        Vote
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- Results -->
+
+            <div class="results-section">
+
+                <div class="section-header">
+                    <h2>Live Voting Results</h2>
+                    <span>Demo Data</span>
+                </div>
+
+                <div class="result-item">
+
+                    <div class="result-heading">
+                        <span>Arun Kumar</span>
+                        <strong id="arunPercent">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-bar"
+                            id="arunBar"
+                            style="width:0%"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <div class="result-heading">
+                        <span>Priya Sharma</span>
+                        <strong id="priyaPercent">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-bar"
+                            id="priyaBar"
+                            style="width:0%"
+                        ></div>
+                    </div>
+
+                </div>
+
+
+                <div class="result-item">
+
+                    <div class="result-heading">
+                        <span>Rahul Raj</span>
+                        <strong id="rahulPercent">0%</strong>
+                    </div>
+
+                    <div class="progress">
+                        <div
+                            class="progress-bar"
+                            id="rahulBar"
+                            style="width:0%"
+                        ></div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         CONFIRMATION MODAL
+    ========================== -->
+
+    <div
+        class="modal"
+        id="confirmationModal"
+    >
+
+        <div class="modal-box">
+
+            <div class="modal-icon">
+                ✓
+            </div>
+
+            <h2>Confirm Your Vote</h2>
+
+            <p>
+                You are about to vote for
+                <strong id="selectedCandidate">
+                    Candidate
+                </strong>.
+                <br><br>
+                Once submitted, your vote cannot be changed.
+            </p>
+
+            <div class="modal-buttons">
+
+                <button
+                    class="cancel-btn"
+                    onclick="closeModal()"
+                >
+                    Cancel
+                </button>
+
+                <button
+                    class="confirm-btn"
+                    onclick="submitVote()"
+                >
+                    Confirm Vote
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+        © 2026 Online Election Voting System | Academic Project
+    </footer>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script>
+
+        /* =========================
+           INITIAL DATA
+        ========================== */
+
+        let selectedCandidate = "";
+        let hasVoted = false;
+
+        let votes = {
+            "Arun Kumar": 25,
+            "Priya Sharma": 32,
+            "Rahul Raj": 18
+        };
+
+
+        /* =========================
+           LOGIN
+        ========================== */
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const voterId =
+                    document.getElementById("voterId").value.trim();
+
+                const password =
+                    document.getElementById("password").value.trim();
+
+                if (
+                    voterId === "VOTER001" &&
+                    password === "123456"
+                ) {
+
+                    document
+                        .getElementById("loginPage")
+                        .style.display = "none";
+
+                    document
+                        .getElementById("dashboard")
+                        .style.display = "block";
+
+                    document
+                        .getElementById("voterName")
+                        .textContent = voterId;
+
+                    updateResults();
+
+                } else {
+
+                    alert(
+                        "Invalid Voter ID or Password.\n\n" +
+                        "Demo Login:\n" +
+                        "Voter ID: VOTER001\n" +
+                        "Password: 123456"
+                    );
+
+                }
+
+            });
+
+
+        /* =========================
+           SELECT CANDIDATE
+        ========================== */
+
+        function selectCandidate(radio) {
+
+            selectedCandidate = radio.value;
+
+            const cards =
+                document.querySelectorAll(".candidate-card");
+
+            cards.forEach(function(card) {
+
+                card.classList.remove("selected");
+
+                const voteButton =
+                    card.querySelector(".vote-btn");
+
+                voteButton.disabled = true;
+
+            });
+
+
+            const selectedCard =
+                radio.closest(".candidate-card");
+
+            selectedCard.classList.add("selected");
+
+            const button =
+                selectedCard.querySelector(".vote-btn");
+
+            button.disabled = false;
+
+        }
+
+
+        /* =========================
+           OPEN CONFIRMATION
+        ========================== */
+
+        function openConfirmation(candidate) {
+
+            if (hasVoted) {
+
+                alert(
+                    "You have already voted."
+                );
+
+                return;
+            }
+
+            selectedCandidate = candidate;
+
+            document
+                .getElementById("selectedCandidate")
+                .textContent = candidate;
+
+            document
+                .getElementById("confirmationModal")
+                .style.display = "flex";
+
+        }
+
+
+        /* =========================
+           CLOSE MODAL
+        ========================== */
+
+        function closeModal() {
+
+            document
+                .getElementById("confirmationModal")
+                .style.display = "none";
+
+        }
+
+
+        /* =========================
+           SUBMIT VOTE
+        ========================== */
+
+        function submitVote() {
+
+            if (!selectedCandidate) {
+
+                alert(
+                    "Please select a candidate."
+                );
+
+                return;
+            }
+
+
+            if (hasVoted) {
+
+                alert(
+                    "You have already voted."
+                );
+
+                return;
+            }
+
+
+            votes[selectedCandidate]++;
+
+            hasVoted = true;
+
+
+            closeModal();
+
+
+            document
+                .getElementById("successMessage")
+                .style.display = "block";
+
+
+            disableVoting();
+
+
+            updateResults();
+
+
+            alert(
+                "Vote submitted successfully for " +
+                selectedCandidate
+            );
+
+        }
+
+
+        /* =========================
+           DISABLE VOTING
+        ========================== */
+
+        function disableVoting() {
+
+            const radioButtons =
+                document.querySelectorAll(
+                    'input[name="candidate"]'
+                );
+
+            radioButtons.forEach(function(radio) {
+                radio.disabled = true;
+            });
+
+
+            const voteButtons =
+                document.querySelectorAll(".vote-btn");
+
+            voteButtons.forEach(function(button) {
+                button.disabled = true;
+            });
+
+        }
+
+
+        /* =========================
+           UPDATE RESULTS
+        ========================== */
+
+        function updateResults() {
+
+            const total =
+                votes["Arun Kumar"] +
+                votes["Priya Sharma"] +
+                votes["Rahul Raj"];
+
+
+            document
+                .getElementById("totalVotes")
+                .textContent = total;
+
+
+            if (total === 0) {
+                return;
+            }
+
+
+            const arun =
+                Math.round(
+                    (votes["Arun Kumar"] / total) * 100
+                );
+
+            const priya =
+                Math.round(
+                    (votes["Priya Sharma"] / total) * 100
+                );
+
+            const rahul =
+                Math.round(
+                    (votes["Rahul Raj"] / total) * 100
+                );
+
+
+            document
+                .getElementById("arunPercent")
+                .textContent = arun + "%";
+
+            document
+                .getElementById("priyaPercent")
+                .textContent = priya + "%";
+
+            document
+                .getElementById("rahulPercent")
+                .textContent = rahul + "%";
+
+
+            document
+                .getElementById("arunBar")
+                .style.width = arun + "%";
+
+            document
+                .getElementById("priyaBar")
+                .style.width = priya + "%";
+
+            document
+                .getElementById("rahulBar")
+                .style.width = rahul + "%";
+
+        }
+
+
+        /* =========================
+           SEARCH CANDIDATES
+        ========================== */
+
+        function searchCandidates() {
+
+            const searchValue =
+                document
+                    .getElementById("searchCandidate")
+                    .value
+                    .toLowerCase();
+
+
+            const cards =
+                document.querySelectorAll(".candidate-card");
+
+
+            cards.forEach(function(card) {
+
+                const name =
+                    card
+                        .getAttribute("data-name")
+                        .toLowerCase();
+
+
+                if (name.includes(searchValue)) {
+
+                    card.style.display = "block";
+
+                } else {
+
+                    card.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+
+        /* =========================
+           LOGOUT
+        ========================== */
+
+        function logout() {
+
+            document
+                .getElementById("dashboard")
+                .style.display = "none";
+
+            document
+                .getElementById("loginPage")
+                .style.display = "flex";
+
+            document
+                .getElementById("loginForm")
+                .reset();
+
+        }
+
+
+        /* =========================
+           INITIAL RESULT DISPLAY
+        ========================== */
+
+        updateResults();
+
+    </script>
+
+</body>
+</html>
+```
